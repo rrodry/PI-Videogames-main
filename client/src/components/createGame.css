@@ -1,0 +1,53 @@
+.containerDiv{
+    height: 100vh;
+    background-color: #EEE;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border: 1px solid black;
+    padding: 10px;
+    background-image: url('../image/depositphotos_130496110-stock-illustration-metallic-modern-design.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+input{
+    background: none;
+    border: none;
+    
+}
+.dvInputCreate input{
+    border-bottom: 2px solid black;
+    margin: 5px;
+
+}
+
+.dvInputCreate input:focus{
+    outline: none;
+    border-radius: 3px ;
+    border: 2px solid blue;
+}
+p{
+    color: red;
+    font-size: small;
+}
+form{
+    border: 1px solid black;
+    padding: 100px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 8px rgb(255, 255, 255);
+}
+.divCreate select{
+    max-width: 70px;
+}
+.labelCreate{
+    display: inline-block;
+    color: white;
+    border-radius: 5px;
+    margin: 5px;
+    padding: 3px;
+}
+.imageLabel{
+    max-width: 200px;
+    max-height: 300px;
+}

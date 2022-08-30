@@ -1,0 +1,13 @@
+body{
+    margin: 0px;
+    padding: 0px;
+    block-size: auto;
+    list-style: none;
+    background-color: rgb(70, 70, 70);
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: auto;
+}
+li{
+    list-style: none;
+}

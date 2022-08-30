@@ -1,0 +1,121 @@
+.divContainer{
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-areas: "nav" "main" ;
+    max-height: 100vh;
+    overflow: auto;
+    background: url('../image/create.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.divCardContainer{
+    place-content: center;
+    display: flex;
+    flex-wrap: wrap;
+}
+.divCardContainer a{
+    text-decoration: none;
+    color: black;
+}
+.divCard{
+    box-shadow: 4px 2px 8px rgb(0, 0, 0);
+    place-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 10px;
+    background-color: rgb(26, 26, 26);
+    border-radius: 5px;
+    text-align: center; 
+    padding: 20px;
+    height: 300px;
+    width: 200px;
+    align-items: center;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: white !important;
+}
+.divCard img{
+    height: 100px;
+    max-width: 100%;
+}
+.divCard:hover{
+    transform: scale(1.2);
+    box-shadow: 0px 0px 0px rgb(61, 61, 61);
+    transition: transform 1s, box-shadow 1s;
+}
+.paginatedContainer{
+    display: flex;
+    place-content: center;
+    margin: 0px;
+}
+.navContainer{
+    display: flex;
+    place-content: center;
+    border-radius: 20px;
+}
+.paginatedContainer ul{
+    padding: 0px;
+}
+.paginatedContainer ul li{
+    display: inline-block;
+}
+.paginatedContainer ul li input{
+    border-radius: 5px;
+    background-color: rgb(0, 0, 0);
+    box-shadow: 0px 0px 8px rgb(0, 0, 0);
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: small;
+    color: white;
+    margin: 5px;
+}
+.paginatedContainer ul li input:hover{
+    transform: scale(1.1);
+    cursor: pointer;
+    transition: transform 0.5s ;
+}
+.main{
+    grid-area: main;
+    display: inline-block;
+}
+.filterContainer{
+    display: flex;
+    place-content: center;
+}
+.filterSelects select{
+    border-radius: 5px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-weight: bold;
+}
+.filterSelects select:focus{
+    border: blue 2px solid
+}
+.buttonsDiv{
+    display: flex;
+    grid-area: nav;
+    margin: 5px;
+    place-content: center;
+}
+.buttonsDiv button{
+    border-radius: 5px;
+    background-color: rgb(0, 0, 0);
+    box-shadow: 0px 0px 8px rgb(0, 0, 0);
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: small;
+    color: white;
+    margin: 5px;
+    max-height: 81px;
+}
+.buttonsDiv button:hover{
+    transform: scale(1.2);
+    transition: transform 0.5s ;
+    cursor: pointer;
+}
+.search input{
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    border-bottom: 1px solid black;
+}
+.search input::placeholder{
+    color: black;
+}
+.p{
+    font-size: xx-large;
+}
