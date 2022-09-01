@@ -1,21 +1,23 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
-import { VideogamesAll, filterGames } from "../actions"
+import { handleLoading, VideogamesAll } from "../actions"
 import { handleFilterGames, handleOrderGames, handleAPBD, handleLoadAll } from "../module/module"
 import "./body.css"
 import Card from "./Card"
 import Paginated from "./Paginated"
 import Search from './Search'
+import Loader from './Loader'
 
 export default function Home() {
     const dispatch = useDispatch()
     const [filterOrder, setOrderFilter] = useState('')
     const videogamesGet = useSelector((state) => state.videogames)
     const generosGet = useSelector((state) => state.gender)
-
+    const loading = useSelector((state) => state.loading)
     const [currenteGamePage, setCurrenteGame] = useState(1)
     const [gamesPage, setPage] = useState(15)
+    
     const lastGame = currenteGamePage * gamesPage // 15
     const firstGame = lastGame - gamesPage // 15 - 15 = 0
     const gameCurrent = videogamesGet.slice(firstGame, lastGame) // [0 - 14]
@@ -23,9 +25,11 @@ export default function Home() {
         setCurrenteGame(numerGamePage)
     }
     useEffect(() => {
-        dispatch(VideogamesAll());
+        dispatch(VideogamesAll()).then(()=>dispatch(handleLoading(false)))
     }, [dispatch])
     return (
+        <div> 
+        {loading ? <Loader /> :
         <div className="divContainer" >
             <div className="buttonsDiv">
                 <Link to='/createGame'>
@@ -67,14 +71,17 @@ export default function Home() {
                 <div className="divCardContainer">{
                     gameCurrent?.map(e => {
                         return (
-                            <Link to={`/details/${e.id}`} >
-                                <Card name={e.name} image={e} gender={e.gender ? e.gender : e.generos.map(e =>e.gender)} />
+                            <Link to={`/details/${e.id}`} key={e.id}>
+                               { <Card name={e.name} image={e} genders={e.genders} />}
                             </Link>
                         )
                     }) }
+                    </div>
                 </div>
             </div>
+                } 
         </div>
+                
     )
     
 }

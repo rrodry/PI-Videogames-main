@@ -3,14 +3,14 @@ const { DataTypes, UUID, UUIDV4 } = require('sequelize');
 // Luego le injectamos la conexion a sequelize.
 module.exports = (sequelize) => {
   // defino el modelo
-  sequelize.define('genero', {
+  sequelize.define('gender', {
     id:{
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true
     },
     gender: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING()
     }
   });
 };

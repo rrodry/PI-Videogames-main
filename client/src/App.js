@@ -6,22 +6,9 @@ import CreateGame from './components/CreateGame';
 import {
   Route,
   Switch,
-  BrowserRouter} from "react-router-dom";
-import { useState } from 'react';
-import Loader from './components/Loader'
+  BrowserRouter
+} from "react-router-dom";
 function App() {
-  const [loading,setLoading] = useState(true)
-  if (loading) {
-    const intervale = setInterval(() => {
-      if (document.readyState === "complete") setLoading(false)
-      clearInterval(intervale)
-    }, 2000);
-    return (
-      <div>
-        <Loader />
-      </div>
-    )
-  }
   return (
     <BrowserRouter>
 

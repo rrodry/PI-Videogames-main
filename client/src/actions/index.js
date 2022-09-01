@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { Link } from 'react-router-dom'
 
 export function VideogamesAll() {
     return async function (dispatch) {
@@ -51,27 +52,35 @@ export function searchGamesChange(payload){
     }
 }
 export function detailsGame(payloadI){
-   return async function(dispatch){
-       const getDetails = await axios.get(`http://localhost:3001/videogame/${payloadI}`)
+    return async function (dispatch){
+        const dataBDAPI = await axios(`http://localhost:3001/videogame/${payloadI}`)
         return dispatch({
-            type:'GET_DETAILS',
-            payload: getDetails.data
+            type:"GET_DETAILS",
+            payload: dataBDAPI.data
         })
-   }
+    }
 }
 export function postGames(payload){
     return async function(dispatch){
         try {
-            const res = await axios.post('http://localhost:3001/videogames',payload)
-            alert("CREACION CON EXITO")
+            await axios.post('http://localhost:3001/videogames', payload).then(() =>
+             true
+           )
+            
         } catch (error) {
-            alert("CREACION FALLIDA - DUPLICADO")
+            console.log(error)
         }
     }
 }
 export function filterApi(payload){
     return{
         type:'FILTER_BY_APBD',
+        payload
+    }
+}
+export function handleLoading(payload){
+    return{
+        type: "LOADING",
         payload
     }
 }

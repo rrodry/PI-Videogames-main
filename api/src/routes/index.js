@@ -1,10 +1,10 @@
 require('dotenv').config();
-const { APIKEY } = process.env
 const { Router } = require('express')
 // Importar todos los routers;
 // Ejemplo: const authRouter = require('./auth.js');
 const  axios  = require('axios')
-const { Videogame , Genero} = require('../db');
+const { APIKEY } = process.env
+const { Videogame , Gender} = require('../db');
 
 
 const router = Router();
@@ -24,10 +24,10 @@ const infoApi = async () =>{
                     name: e.name,
                     id: e.id,
                     image: e.background_image,
-                    gender: e.genres,
+                    genders: e.genres.map(el => el.name),
                     rating: e.rating,
                     api: true,
-                    platform: e.platforms
+                    platform: e.platforms.map( e => e.platform.name)
                 }
                 )
             })
@@ -38,15 +38,37 @@ const infoApi = async () =>{
     }
 }
 const infoDb = async () => {
-    return await Videogame.findAll({
+    const videogameDB= await Videogame.findAll({
         include:{
-            model: Genero,
-            atributtes : ['name'],
-            through: {
-                atributtes: []
-            }
+            model: Gender,
         }
     })
+    const vgTOJSON = videogameDB.map(v => v.toJSON())
+    
+    // console.log({
+    //     name: vgTOJSON[0].name,
+    //     id: vgTOJSON[0].id,
+    //     description: vgTOJSON[0].description,
+    //     launchDate: vgTOJSON[0].launchDate,
+    //     rating: vgTOJSON[0].rating,
+    //     platform: vgTOJSON[0].platform,
+    //     src:vgTOJSON[0].src,
+    //     genders:vgTOJSON[0].genders.map(g=> g.gender)
+    // })
+    let array = []
+    for (let i = 0; i < vgTOJSON.length; i++) {
+        array.push({name: vgTOJSON[i].name,
+        id: vgTOJSON[i].id,
+        description: vgTOJSON[i].description,
+        launchDate: vgTOJSON[i].launchDate,
+        rating: vgTOJSON[i].rating,
+        platform: vgTOJSON[i].platform,
+        src:vgTOJSON[i].src,
+        genders:vgTOJSON[i].genders.map(g=> g.gender)})
+    
+    }
+    return array
+
 }
 
 const videosGames = async () => {
@@ -70,63 +92,70 @@ router.get('/videogames', async (req,res) => {
 })
 
 router.get('/videogame/:idVideogame', async ( req, res ) => {
-    const idVideogame = req.params.idVideogame
-    const all = await axios.get(`https://api.rawg.io/api/games/${idVideogame}?key=${APIKEY}`)
-    const dataShow = {
-        descripcion : all.data.description,
-        dateLaunch: all.data.released,
-        rating: all.data.rating,
-        platform: all.data.platforms,
-        name: all.data.name,
-        image: all.data.background_image,
-        gender: all.data.genres
-    }
-    all.data?
-    res.status(200).send(dataShow)
-    : res.status(200).send("Game Not Found")
-})
-
-router.get('/genres', async ( req, res) => {
-    const dataApi = await axios.get('https://api.rawg.io/api/games?key=bccf7ef0f90147c1856f067a4e7578b6&page_size=100')
-    const filterGen = dataApi.data.results.map( e => e.genres.map( el => el.name))
-    for(i=0 ; i<filterGen.length; i++){
-        filterGen[i].forEach(element => {
-            Genero.findOrCreate({
+    const { idVideogame } = req.params
+    const dataApi = await axios(`https://api.rawg.io/api/games/${idVideogame}?key=${APIKEY}`).catch( function(error){ return false} )
+    if (dataApi){
+        console.log(dataApi);   
+        let dataShowDet 
+            dataShowDet = {
+                description: dataApi.data.description_raw,
+                name: dataApi.data.name,
+                gender: dataApi.data.genres.map( e => e.name),
+                src: dataApi.data.background_image,
+                launchDate: dataApi.data.released,
+                rating: dataApi.data.rating,
+                platform: dataApi.data.platforms.map( e => e.platform.name)
+            }
+    
+            res.status(200).send(dataShowDet)
+    }else{
+        try {
+            const gamesDb = await Videogame.findAll({
                 where:{
-                    gender:element
+                    id:idVideogame
+                },
+                include:{
+                    model: Gender,
                 }
             })
-        });
+            res.status(200).send(gamesDb[0])
+        } catch (error) {
+            res.status(404).send("Game Not Found")
+        }
+
     }
-    const generosBD = await Genero.findAll()
-    res.send(generosBD)
+    })
+router.get('/genres', async ( req, res) => {
+    const dataApi = (await axios.get(`https://api.rawg.io/api/genres?key=${APIKEY}`)).data
+    dataApi.results.map(async g => await Gender.findOrCreate(
+        {where:{
+            gender:g.name
+        }
+    }))
+    const generosBD = await Gender.findAll(
+        {attributes:[["gender","gender"],["id","id"]]}
+    )
+    const genres = generosBD.map(g=>
+       g.dataValues
+    )
+    console.log(genres)    
+    // {genres.push(generosBD.map(g=>g.id))}
+    res.send(genres)
 
 })
 
 router.post("/videogames", async( req, res ) => {
-    const {name, description, launchDate, rating, platform, genders, src} = req.body
-    const concat = platform.join("")
-    const [videogameConst, created] = 
-        await Videogame.findOrCreate({
-            where:{
-                name,
-                description,
-                launchDate,
-                rating,
-                platform:concat,
-                src
+    const { name, description,  platform, genders, src } = req.body
+    try {
+        if (!name || !description  || !platform || !genders || !src ){
+            res.status(400).send("Atributtes not send")
+        }else{
+            const created = await Videogame.create(req.body)
+            created.addGender(genders)
             }
-        })
-    const genderJoin = genders.join("")
-    const [genderCreated, createdGender] = 
-        await Genero.findOrCreate({
-            where: {
-                gender:genderJoin
-            }
-        })
-        genders.forEach(async (e) => {
-            const find = await Genero.findAll({ where: { gender: e } });
-            if (find) { await videogameConst.addGenero(find) };
-        })
-        created ? res.status(200).send("OK") : res.status(404).send("Ya creado")
+
+    } catch (error) {
+        console.log(error)
+    }
+    
 })

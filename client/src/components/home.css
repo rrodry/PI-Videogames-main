@@ -102,7 +102,7 @@
     font-size: small;
     color: white;
     margin: 5px;
-    max-height: 81px;
+    max-height: 30px;
 }
 .buttonsDiv button:hover{
     transform: scale(1.2);

@@ -1,38 +1,32 @@
-
 const initialState = {
     videogames: [],
     gender: [],
     cGender:[],
     cVideogames: [],
-    detailsVideoGame: [],
+    detailsVideoGame: {},
     platform : [],
-    addPlatform: []
+    addPlatform: [],
+    loading: true
 }
+
 
 function rootReducer(state = initialState, action) {
     switch (action.type) {
         case 'GET_VIDEOGAMES':
-            const platforms = action.payload.map( e => typeof e.platform === "string" ? e.platform : e.platform.map(el => el.platform.name))
+            
+            const platform = [...new Set(action.payload.map( e => e.platform).flat())]
+
             return {
                 ...state,
                 videogames: action.payload,
                 cVideogames: action.payload,
                 cGender: action.dataGen,
                 gender: action.dataGen,
-                platform: platforms
+                platform: platform
         }
         case 'FILTER_GAMES':
             const gamesAll = state.cVideogames
-            const showGames = action.payload !== "all" ?
-            gamesAll.filter(element => {
-                const length = element.gender ? element.gender.length : element.generos.length
-                for (let i = 0; i < length ; i++) {
-                    const el = element.gender ? element.gender[i].name : element.generos[i].gender
-                    if ( el === action.payload) {
-                        return element
-                    }
-                }
-            }) : gamesAll
+            const showGames = action.payload === "all" ? state.cVideogames : gamesAll.filter(e => e.genders.includes(action.payload))       
             return {
                 ...state,
                 videogames: showGames
@@ -71,7 +65,7 @@ function rootReducer(state = initialState, action) {
             ...state,
             videogames: action.payload
         }
-        case 'GET_DETAILS':
+        case "GET_DETAILS":
             return {
                 ...state,
                 detailsVideoGame: action.payload
@@ -87,9 +81,15 @@ function rootReducer(state = initialState, action) {
             return{
                 ...state
         }
+        case 'LOADING':
+            return{
+                ...state,
+                loading: action.payload
+
+        }
         case 'FILTER_BY_APBD':
-            const videogamesAllAPBD = state.videogames
-            const filterAPBD = videogamesAllAPBD.filter(e => action.payload === 'BD' ? !e.api ? e : false : e.api )
+            const videogamesAllAPBD = state.cVideogames
+            const filterAPBD = action.payload=== "all" ? state.cVideogames : videogamesAllAPBD.filter(e => action.payload === 'BD' ? !e.api : e.api )
 
             return{
                 ...state,

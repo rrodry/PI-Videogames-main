@@ -1,7 +1,17 @@
-import { Link } from "react-router-dom";
+import React from 'react'
 import './landingPage.css'
-export default function landingPage () {
-    return <div className="landingContainer">
+import { Link } from "react-router-dom"
+import { useDispatch, useSelector } from "react-redux"
+import { VideogamesAll } from "../actions"
+import { useEffect } from "react"
+
+function LandingPage() {
+    const dispatch= useDispatch()
+    useEffect(() => {
+        dispatch(VideogamesAll());
+    }, [dispatch])
+  return (
+ <div className="landingContainer">
         <div className="dvLanding">
         <div>
             <h1>Bienvenidos!</h1>
@@ -11,4 +21,7 @@ export default function landingPage () {
         </div>
         </div>
     </div>
+  )
 }
+
+export default LandingPage
