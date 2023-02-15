@@ -5,7 +5,7 @@ const { Router } = require('express')
 const  axios  = require('axios')
 const { APIKEY } = process.env
 const { Videogame , Gender} = require('../db');
-
+console.log("API KEY ESSSSSS"+APIKEY);
 
 const router = Router();
 // Configurar los routers
@@ -26,8 +26,7 @@ const infoApi = async () =>{
                     image: e.background_image,
                     genders: e.genres.map(el => el.name),
                     rating: e.rating,
-                    api: true,
-                    platform: e.platforms.map( e => e.platform.name)
+                    api: true
                 }
                 )
             })
@@ -44,17 +43,6 @@ const infoDb = async () => {
         }
     })
     const vgTOJSON = videogameDB.map(v => v.toJSON())
-    
-    // console.log({
-    //     name: vgTOJSON[0].name,
-    //     id: vgTOJSON[0].id,
-    //     description: vgTOJSON[0].description,
-    //     launchDate: vgTOJSON[0].launchDate,
-    //     rating: vgTOJSON[0].rating,
-    //     platform: vgTOJSON[0].platform,
-    //     src:vgTOJSON[0].src,
-    //     genders:vgTOJSON[0].genders.map(g=> g.gender)
-    // })
     let array = []
     for (let i = 0; i < vgTOJSON.length; i++) {
         array.push({name: vgTOJSON[i].name,
@@ -62,7 +50,6 @@ const infoDb = async () => {
         description: vgTOJSON[i].description,
         launchDate: vgTOJSON[i].launchDate,
         rating: vgTOJSON[i].rating,
-        platform: vgTOJSON[i].platform,
         src:vgTOJSON[i].src,
         genders:vgTOJSON[i].genders.map(g=> g.gender)})
     
@@ -104,7 +91,6 @@ router.get('/videogame/:idVideogame', async ( req, res ) => {
                 src: dataApi.data.background_image,
                 launchDate: dataApi.data.released,
                 rating: dataApi.data.rating,
-                platform: dataApi.data.platforms.map( e => e.platform.name)
             }
     
             res.status(200).send(dataShowDet)
@@ -145,9 +131,9 @@ router.get('/genres', async ( req, res) => {
 })
 
 router.post("/videogames", async( req, res ) => {
-    const { name, description,  platform, genders, src } = req.body
+    const { name, description,  genders, src } = req.body
     try {
-        if (!name || !description  || !platform || !genders || !src ){
+        if (!name || !description || !genders || !src ){
             res.status(400).send("Atributtes not send")
         }else{
             const created = await Videogame.create(req.body)

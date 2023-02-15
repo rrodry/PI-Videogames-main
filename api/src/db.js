@@ -3,14 +3,22 @@ const { Sequelize } = require('sequelize');
 const fs = require('fs');
 const path = require('path');
 const {
-  DB_USER, DB_PASSWORD, DB_HOST,
+  DB_USER, DB_PASSWORD, DB_HOST,BD_NAME,
 } = process.env;
 
-const sequelize = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/videogames`, {
-  logging: false, // set to console.log to see the raw SQL queries
-  native: false, // lets Sequelize know we can use pg-native for ~30% more speed
+const sequelize = new Sequelize("bd_test","root","",{
+  host:'localhost',
+  dialect:'mysql'
 });
+
+
 const basename = path.basename(__filename);
+
+sequelize.authenticate()
+  .then(()=>{console.log("conectado");})
+  .catch((e)=>{
+    console.log(console.log('ERROR ES: '+ e));
+  })
 
 const modelDefiners = [];
 
@@ -36,6 +44,7 @@ const { Videogame, Gender } = sequelize.models;
 // Product.hasMany(Reviews);
 Videogame.belongsToMany(Gender, {through: "videogame_genres"})
 Gender.belongsToMany(Videogame, {through: "videogame_genres"})
+
 
 
 

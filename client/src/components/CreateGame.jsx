@@ -8,7 +8,6 @@ import './createGame.css'
 export default function CreateGame(s) {
     const dispatch = useDispatch()
     const generosGet = useSelector((state) => state.gender)
-    const platformGet = useSelector((state) => state.platform)
     const [generosAdds, setAdds] = useState({
         genders:[]
     })
@@ -17,8 +16,7 @@ export default function CreateGame(s) {
         description: "",
         launchDate:"",
         rating:"",
-        genders: [],
-        platform: [],
+        genders: []
     })
     const history = useHistory()
     const [errors, setErrors] = useState({})
@@ -26,8 +24,7 @@ export default function CreateGame(s) {
         dispatch(VideogamesAll())
     }, [dispatch])
     console.log(generosAdds);
-    if (generosGet && platformGet) {
-        const platformSet = new Set(platformGet.flat())
+    if (generosGet) {
         const errorsLen = Object.keys(errors).length === 0
         return (
             <div className="containerDiv">
@@ -63,15 +60,6 @@ export default function CreateGame(s) {
                                 <option defaultValue>Genders</option>
                                 {generosGet.map(e => <option value={`${e.id}-${e.gender}`} key={e.id}>{e.gender}</option>)}
                             </select>
-
-                            <select onChange={e => handleAddPlatform(e, setInputSend, inputSend)}>
-                                <option defaultValue>Platform</option>
-                                {[...platformSet].map(el =>
-                                    <option value={el} key={el}>{el}</option>)}
-                            </select>
-                        </div>
-                        <div>
-                            <label className="labelCreate"> {inputSend.platform.map(e => { return (<label>{e} </label>) })} </label>
                         </div>
                         <div>
                             <label className="labelCreate"> {generosAdds?.genders.map(e => { return (<label>{e} - </label>) })} </label>
