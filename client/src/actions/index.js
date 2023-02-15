@@ -3,12 +3,10 @@ import { Link } from 'react-router-dom'
 
 export function VideogamesAll() {
     return async function (dispatch) {
-        const dataBack = await axios.get('http://localhost:3001/videogames')
-        const dataGen = await axios.get('http://localhost:3001/genres')
         return dispatch({
             type: "GET_VIDEOGAMES",
-            payload: dataBack.data,
-            dataGen: dataGen.data
+            payload:" dataBack.data",
+            dataGen: "dataGen.data"
         })
     }
 
